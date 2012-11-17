@@ -5,12 +5,35 @@ A php rest client for the Node.js redis library kue
 
 Brought to you by the fine developers @ [Telly.com](http://telly.com/)
 
+# Installation
+
+```
+composer require php-kue
+```
+
 # Usage
 
-Usage is very simple, similar to Facebook's SDK:
+Queueing a job is simple:
 
 ```php
-$kue = new KueApi('127.0.0.1:3000');
+$kue = new KueApi('127.0.0.1', 3000);
+try {
+	$result = $kue->postJob('myJob', array('stuff to do'));
+} catch (KueApiException $kae) {
+	error_log('Kue error message: ' . $kae->getMessage());
+}
+```
+
+Results:
+```php
+var_export($result);
+3
+```
+
+Generalized access is similar to Facebook's SDK:
+
+```php
+$kue = new KueApi('127.0.0.1', 3000);
 try {
 	$result = $kue->api('job/3', 'GET');
 } catch (KueApiException $kae) {
