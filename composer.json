@@ -1,0 +1,22 @@
+{
+	"name": "thesmart/php-kue",
+	"type": "library",
+	"description": "A php rest client for the Node.js redis library kue",
+	"keywords": ["kue","queue", "redis queue"],
+	"homepage": "https://github.com/thesmart/php-Kue",
+	"license": "MIT",
+	"authors": [
+		{
+		"name": "Telly",
+		"homepage": "http://telly.com"
+		}
+	],
+	"require": {
+		"php": ">=5.2.0",
+		"ext-curl": "*",
+        "ext-json": "*"
+	},
+	"autoload": {
+		"classmap": ["lib"]
+	}
+}
