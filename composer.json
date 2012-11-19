@@ -1,7 +1,7 @@
 {
 	"name": "thesmart/php-kue",
 	"type": "library",
-	"description": "A php rest client for the Node.js redis library kue",
+	"description": "A producer client for Kue, a redis queue implementation",
 	"keywords": ["kue","queue", "redis queue"],
 	"homepage": "https://github.com/thesmart/php-Kue",
 	"license": "MIT",
@@ -13,8 +13,8 @@
 	],
 	"require": {
 		"php": ">=5.2.0",
-		"ext-curl": "*",
-        "ext-json": "*"
+		"ext-json": "*",
+		"predis/predis": "0.8.0"
 	},
 	"autoload": {
 		"classmap": ["lib"]
