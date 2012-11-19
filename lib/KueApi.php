@@ -33,12 +33,12 @@ class KueApi {
 		CURLOPT_HTTPHEADER		=> array(
 			// disable the 'Expect: 100-continue' behaviour. This causes CURL to wait
 			// for 2 seconds if the server does not support this header.
-			'Expect:'
+			'Expect:',
+			'Content-Type: application/json'
 		)
 	);
 
 	protected $hostName;
-	protected $port;
 
 	/**
 	 * Construct an API handler
@@ -52,7 +52,7 @@ class KueApi {
 			$this->hostName = $this->hostName . '/';
 		}
 
-		$this->port = intval($port);
+		$this->curl_opts[CURLOPT_PORT] = intval($port);
 	}
 
 	/**
@@ -77,43 +77,50 @@ class KueApi {
 				"attempts" => $maxAttempts,
 				"priority" => $priority
 			)
-		));
+		), "POST");
 
 		if (!isset($result['message'])) {
 			throw new KueApiException("Unexpected response: " . json_encode($result));
+		} else if (!isset($result['id'])) {
+			throw new KueApiException("Job not created: " . json_encode($result));
 		}
 
-		$matchCount = preg_match('#job ([0-9]+) created#', $result['message'], $matches);
-		if ($matchCount < 1) {
-			throw new KueApiException("Unexpected response: " . json_encode($result));
-		}
-
-		return intval($matches[1]);
+		return intval($result["id"]);
 	}
 
 
 	/**
 	 * Make an api call
-	 * @param string $path		The procedure name to call
+	 * @param string $path			The procedure name to call
 	 * @param array $params			Optional. Parameters to send.
+	 * @param string $method		Optional. Defualt: GET
 	 * @return array		The result data
 	 * @throws KueApiException
 	 */
-	public function api($path, array $params = array()) {
+	public function api($path, array $params = array(), $method = "GET") {
 		if (substr($path, 0, 1) === '/') {
 			// no starting slash
 			$path = substr($path, 1);
 		}
 
-		$url = $this->hostName . $path . ':' . $this->port;
-		$url .= '?' . self::queryToStr($params, true);
+		$url = 'http://' . $this->hostName . $path;
 
-		$ch = curl_init($url);
-		$opts = $this->curl_opts;
-		curl_setopt_array($ch, $opts);
+		if ($method === "POST") {
+			$ch = curl_init($url);
+			$opts = $this->curl_opts;
+			curl_setopt_array($ch, $opts);
+			curl_setopt($ch, CURLOPT_POST, 1);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($params));
+		} else {
+			$url .= '?' . self::queryToStr($params, true);
+			$ch = curl_init($url);
+			$opts = $this->curl_opts;
+			curl_setopt_array($ch, $opts);
+		}
+
 		$result = curl_exec($ch);
 
-		curl_close($ch);
+//		curl_close($ch);
 
 		if ($result === false) {
 			// API returned non-200 response
