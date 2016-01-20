@@ -22,12 +22,10 @@ $jobId = $kue->createJob('email', array (
 	'to' => 'tj@learnboost.com',
 	'template' => 'welcome-email',
 ));
-
-Results:
-```php
-var_export($result);
-3
+var_export($jobId);
+// => 3
 ```
+
 ## @TODO
 
  * Support for processing queue from PHP
