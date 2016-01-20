@@ -16,18 +16,17 @@ composer require php-kue
 Queueing a job is simple:
 
 ```php
-$kue = new KueApi('127.0.0.1', 6379);
+$redis = new Predis\Client('tcp://127.0.0.1:6379');
+$kue = new KueApi($redis);
 $jobId = $kue->createJob('email', array (
 	'title' => 'welcome email for tj',
 	'to' => 'tj@learnboost.com',
 	'template' => 'welcome-email',
 ));
-
-Results:
-```php
-var_export($result);
-3
+var_export($jobId);
+// => 3
 ```
+
 ## @TODO
 
  * Support for processing queue from PHP
