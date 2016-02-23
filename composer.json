@@ -1,5 +1,5 @@
 {
-	"name": "thesmart/php-kue",
+	"name": "threadmeup/php-kue",
 	"type": "library",
 	"description": "A producer client for Kue, a redis queue implementation",
 	"keywords": ["kue","queue", "redis queue"],
