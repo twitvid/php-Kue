@@ -1,10 +1,11 @@
 <?php
 
 if (!function_exists('json_decode')) {
-  throw new Exception('KueApi needs the JSON PHP extension.');
+	throw new Exception('KueApi needs the JSON PHP extension.');
 }
 
 use \Predis\Client;
+use Carbon\Carbon;
 
 /**
  * A php rest client for Kue's API
@@ -63,36 +64,37 @@ class KueApi {
 		$result = $this->client->sadd('q:job:types', $type);
 
 		$result = $this->client->hmset(
-			'q:job:' . $id,
-			'id', $id,
-			'state', 'inactive',
-			'type', $type,
-			'data', json_encode($data),
-			'priority', $priority,
-			'created_at', time() * 1000
+				'q:job:' . $id,
+				'max_attempts', '1',
+				'type', $type,
+				'created_at', Carbon::now(),
+				'promote_at', Carbon::now(),
+				'updated_at', Carbon::now(),
+				'priority', $priority,
+				'data', json_encode($data),
+				'state', 'inactive'
+		);
+		$this->client->zadd(
+				'q:jobs',
+				$priority,
+				$id
 		);
 
 		$this->client->zadd(
-			'q:jobs',
-			$priority,
-			$id
+				'q:jobs:inactive',
+				$priority,
+				$id
 		);
 
 		$this->client->zadd(
-			'q:jobs:inactive',
-			$priority,
-			$id
-		);
-
-		$this->client->zadd(
-			'q:jobs:' . $type . ':inactive',
-			$priority,
-			$id
+				'q:jobs:' . $type . ':inactive',
+				$priority,
+				$id
 		);
 
 		$this->client->lpush(
-			'q:' . $type . ':jobs',
-			1
+				'q:' . $type . ':jobs',
+				1
 		);
 
 		return $id;
