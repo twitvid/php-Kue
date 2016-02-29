@@ -73,7 +73,7 @@ class KueApi {
 		);
 		//Create an id for the zset to preserve FIFO order
 
-		public function createZidd($id) {
+		public function createZid($id) {
 			$idAsString = strval($id);
 			$idLen = '' . strlen($idAsString);
 			$len = 2 - strlen($idLen);
@@ -86,7 +86,7 @@ class KueApi {
 		$this->client->zadd(
 			'q:jobs',
 			$priority,
-			$this->createZidd($id)
+			$this->createZid($id)
 		);
 
 		$this->client->zadd(
