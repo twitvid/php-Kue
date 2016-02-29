@@ -71,23 +71,34 @@ class KueApi {
 			'priority', $priority,
 			'created_at', time() * 1000
 		);
+		//Create an id for the zset to preserve FIFO order
+
+		public function createZidd($id) {
+			$idAsString = strval($id);
+			$idLen = '' . strlen($idAsString);
+			$len = 2 - strlen($idLen);
+			while ($len--) {
+				$idLen = '0' . $idLen;
+			}
+			return $idLen . '|' . $id;
+		}
 
 		$this->client->zadd(
 			'q:jobs',
 			$priority,
-			$id
+			$this->createZidd($id)
 		);
 
 		$this->client->zadd(
 			'q:jobs:inactive',
 			$priority,
-			$id
+			$zId
 		);
 
 		$this->client->zadd(
 			'q:jobs:' . $type . ':inactive',
 			$priority,
-			$id
+			$zId
 		);
 
 		$this->client->lpush(
