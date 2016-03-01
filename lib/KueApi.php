@@ -86,13 +86,13 @@ class KueApi {
 		$this->client->zadd(
 			'q:jobs:inactive',
 			$priority,
-			$zId
+			$this->createZid($id)
 		);
 
 		$this->client->zadd(
 			'q:jobs:' . $type . ':inactive',
 			$priority,
-			$zId
+			$this->createZid($id)
 		);
 
 		$this->client->lpush(
