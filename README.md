@@ -4,6 +4,7 @@ php-kue
 A producer client for Kue, a redis queue implementation
 
 Originally brought to you by the fine developers @ [Telly.com](http://telly.com/)
+
 Now maintained by the just as fine developers @ [Thredmeup.com](http://threadmeup.com/)
 
 # Installation
