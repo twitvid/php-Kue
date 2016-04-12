@@ -7,6 +7,7 @@ if (!function_exists('json_decode')) {
 }
 
 use Predis\Client;
+use Carbon\Carbon;
 
 /**
  * A php rest client for Kue's API
