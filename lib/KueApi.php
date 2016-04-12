@@ -1,10 +1,12 @@
 <?php
 
+namespace ThreadMeUp\Kue;
+
 if (!function_exists('json_decode')) {
 	throw new Exception('KueApi needs the JSON PHP extension.');
 }
 
-use \Predis\Client;
+use Predis\Client;
 use Carbon\Carbon;
 
 /**
@@ -14,8 +16,8 @@ use Carbon\Carbon;
  *
  * @author John Smart <smart@telly.com>
  */
-class KueApi {
-
+class KueApi
+{
 	const PRIORITY_LOW = 10;
 	const PRIORITY_NORMAL = 0;
 	const PRIORITY_MEDIUM = -5;
@@ -33,7 +35,8 @@ class KueApi {
 	 * Construct an API handler
 	 * @param \Predis\Client $client
 	 */
-	public function __construct(Predis\Client $client) {
+	public function __construct(Client $client)
+	{
 		$this->client = $client;
 	}
 
@@ -45,20 +48,21 @@ class KueApi {
 	 * @param int $maxAttempts	Number of times the job will be attempted
 	 * @return int		The job id
 	 */
-	public function createJob($type, $data, $priority = KueApi::PRIORITY_NORMAL, $maxAttempts = 2) {
+	public function createJob($type, $data, $priority = KueApi::PRIORITY_NORMAL, $maxAttempts = 2)
+	{
 		if (empty($type)) {
-			throw new InvalidArgumentException("Empty job types not allowed");
+			throw new \InvalidArgumentException("Empty job types not allowed");
 		}
 
 		$maxAttempts = intval($maxAttempts);
 		if (!$maxAttempts) {
-			throw new InvalidArgumentException("It is silly to post job with 0 attempts");
+			throw new \InvalidArgumentException("It is silly to post job with 0 attempts");
 		}
 		$priority = intval($priority);
 
 		$id = $this->client->incr('q:ids');
 		if (!is_int($id)) {
-			throw new RuntimeException("Unable to createJob, id not set by redis");
+			throw new \RuntimeException("Unable to createJob, id not set by redis");
 		}
 
 		$result = $this->client->sadd('q:job:types', $type);
@@ -112,6 +116,5 @@ class KueApi {
 		}
 		return $idLen . '|' . $id;
 	}
-
 
 }
