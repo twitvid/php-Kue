@@ -48,7 +48,7 @@ class KueApi
 	 * @param int $maxAttempts	Number of times the job will be attempted
 	 * @return int		The job id
 	 */
-	public function createJob($type, $data, $priority = KueApi::PRIORITY_NORMAL, $maxAttempts = 2)
+	public function createJob($type, $data, $priority = KueApi::PRIORITY_NORMAL, $maxAttempts = 3)
 	{
 		if (empty($type)) {
 			throw new \InvalidArgumentException("Empty job types not allowed");
@@ -64,19 +64,23 @@ class KueApi
 		if (!is_int($id)) {
 			throw new \RuntimeException("Unable to createJob, id not set by redis");
 		}
-
+		$backoff = [
+			'delay' => 60*1000,
+			'type' => 'exponential'
+		];
 		$result = $this->client->sadd('q:job:types', $type);
 
 		$result = $this->client->hmset(
-				'q:job:' . $id,
-				'max_attempts', '1',
-				'type', $type,
-				'created_at', Carbon::now(),
-				'promote_at', Carbon::now(),
-				'updated_at', Carbon::now(),
-				'priority', $priority,
-				'data', json_encode($data),
-				'state', 'inactive'
+			'q:job:' . $id,
+			'max_attempts', $maxAttempts,
+			'backoff', json_encode($backoff),
+			'type', $type,
+			'created_at', Carbon::now(),
+			'promote_at', Carbon::now(),
+			'updated_at', Carbon::now(),
+			'priority', $priority,
+			'data', json_encode($data),
+			'state', 'inactive'
 		);
 
 		//Create an id for the zset to preserve FIFO order
@@ -100,8 +104,8 @@ class KueApi
 		);
 
 		$this->client->lpush(
-				'q:' . $type . ':jobs',
-				1
+			'q:' . $type . ':jobs',
+			1
 		);
 
 		return $id;
