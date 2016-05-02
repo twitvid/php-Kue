@@ -9,28 +9,45 @@ Now maintained by the just as fine developers @ [Thredmeup.com](http://threadmeu
 
 # Installation
 
+
+Add to your composer.json file : 
 ```
-composer require php-kue
+"require": {
+        "threadmeup/php-kue": "^0.2.0"
+    },
 ```
 
 # Usage
 
-Queueing a job is simple:
+####Configure:
 
-```php
-$kue = new KueApi('127.0.0.1', 6379);
-$jobId = $kue->createJob('email', array (
-	'title' => 'welcome email for tj',
-	'to' => 'tj@learnboost.com',
-	'template' => 'welcome-email',
-));
-
-Results:
-```php
-var_export($result);
-3
 ```
-## @TODO
 
- * Support for processing queue from PHP
- * Better error handling
+$this->kueRedis = new Client([
+            'host' => CACHE_HOST,
+            'port' => CACHE_HOST_PORT,
+            'database' => CACHE_DATABASE
+        ]);
+$this->kue = new KueApi($this->kueRedis);
+```
+        
+####Add Job to Queue:
+```
+$responseFromKue =  $this->kue->createJob(
+	<yarn queue name>,                    (Queue Name specified in Yarn: Required)
+	array(
+		'movement_id' => $movementId  (Data Yarn is expecting: Required)
+	),
+	<priority level>,                      (Queue priority level, default is Normal: Optional)
+	<maximum attempts>                    (# of times job will be attempted in active status: Optional)
+        		
+));;
+
+```
+####Results:
+```
+var_export($responseFromKue);
+Job <id number> has been added to queue
+```
+
+
