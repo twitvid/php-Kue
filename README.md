@@ -13,7 +13,7 @@ Now maintained by the just as fine developer.
 Add to your composer.json file : 
 ```
 "require": {
-        "threadmeup/php-kue": "^0.2.0"
+        "cgrafton/php-kue": "^0.2.0"
     },
 ```
 
@@ -23,31 +23,31 @@ Add to your composer.json file :
 
 ```
 
-$this->kueRedis = new Client([
-            'host' => CACHE_HOST,
-            'port' => CACHE_HOST_PORT,
-            'database' => CACHE_DATABASE
-        ]);
-$this->kue = new KueApi($this->kueRedis);
+$kueConfig = new Client([
+    'host' => CACHE_HOST,
+    'port' => CACHE_HOST_PORT,
+    'database' => CACHE_DATABASE
+]);
+$kue = new KueApi($kueConfig);
 ```
         
 ####Add Job to Queue:
 ```
-$responseFromKue =  $this->kue->createJob(
-	<yarn queue name>,                    (Queue Name specified in Yarn: Required)
-	array(
-		'movement_id' => $movementId  (Data Yarn is expecting: Required)
-	),
-	<priority level>,                      (Queue priority level, default is Normal: Optional)
-	<maximum attempts>                    (# of times job will be attempted in active status: Optional)
-        		
-));;
+$queueName = 'my_queue_name';
+$messageData = array('foo' => 'bar');
+$priorityLevel = 'my_queue_name'; // Queue priority level, default is Normal: Optional
+$queueName = 'my_queue_name';
+$maxAttempts = 10; // (# of times job will be attempted in active status: Optional)
+$responseFromKue =  $kue->createJob(
+    $queueName,
+    $messageData,
+    $priorityLevel,
+    $maxAttempts
+);
 
 ```
 ####Results:
 ```
 var_export($responseFromKue);
-Job <id number> has been added to queue
+Job {kue_job_number} has been added to queue
 ```
-
-

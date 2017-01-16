@@ -1,22 +1,22 @@
 {
-	"name": "threadmeup/php-kue",
-	"type": "library",
-	"description": "A producer client for Kue, a redis queue implementation",
-	"keywords": ["kue","queue", "redis queue"],
-	"homepage": "https://github.com/thesmart/php-Kue",
-	"license": "MIT",
-	"authors": [
-		{
-		"name": "Telly",
-		"homepage": "http://telly.com"
-		}
-	],
-	"require": {
-		"php": ">=5.2.0",
-		"ext-json": "*",
-		"predis/predis": "1.0.*"
-	},
-	"autoload": {
-		"classmap": ["lib"]
-	}
+    "name": "cgrafton/php-kue",
+    "type": "library",
+    "description": "A producer client for Kue, a redis queue implementation",
+    "keywords": ["kue","queue", "redis queue"],
+    "homepage": "https://github.com/thesmart/php-Kue",
+    "license": "MIT",
+    "authors": [
+        {
+        "name": "Telly",
+        "homepage": "http://telly.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.2.0",
+        "ext-json": "*",
+        "predis/predis": "1.0.*"
+    },
+    "autoload": {
+        "classmap": ["lib"]
+    }
 }

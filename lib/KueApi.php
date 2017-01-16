@@ -1,6 +1,6 @@
 <?php
 
-namespace ThreadMeUp\Kue;
+namespace cgrafton\Kue;
 
 if (!function_exists('json_decode')) {
 	throw new Exception('KueApi needs the JSON PHP extension.');
